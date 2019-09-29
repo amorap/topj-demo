@@ -44,6 +44,7 @@ public class TopJTest {
         readDelivery = deliveryService.read(account, contractAccount);
         log.info(readDelivery.toString());
 
+        topJConnector.getAccountInfo(deliverer);
         deliveryService.confirmDelivery(account, contractAccount);
 
         readDelivery = deliveryService.read(account, contractAccount);
