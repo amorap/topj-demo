@@ -37,7 +37,8 @@ public class DeliveryService {
     @AllArgsConstructor
     private enum DeliveryActions {
         CREATE("create_delivery"),
-        ASSIGN_DELIVERER("assign_deliverer");
+        ASSIGN_DELIVERER("assign_deliverer"),
+        CONFIRM_DELIVERY("confirm_delivery");
 
         private String actionName;
     }
@@ -84,14 +85,16 @@ public class DeliveryService {
     }
 
     public void assignDeliverer(Account deliverer, Account contractAccount){
-        ResponseBase<XTransaction> callContractResult2 = topJConnector.getTopj()
+        ResponseBase<XTransaction> callContractResult = topJConnector.getTopj()
                 .callContract(deliverer, contractAccount.getAddress(), DeliveryActions.ASSIGN_DELIVERER.getActionName(), Collections.emptyList());
-        log.debug(JSON.toJSONString(callContractResult2));
+        log.debug(JSON.toJSONString(callContractResult));
         sleep();
     }
 
-    public void update(Delivery delivery){
-
+    public void confirmDelivery(Account account, Account contractAccount){
+        ResponseBase<XTransaction> callContractResult = topJConnector.getTopj()
+                .callContract(account, contractAccount.getAddress(), DeliveryActions.CONFIRM_DELIVERY.getActionName(), Collections.emptyList());
+        log.debug(JSON.toJSONString(callContractResult));
     }
 
     public Delivery read(Account account, Account accountContract){
@@ -109,13 +112,15 @@ public class DeliveryService {
                 .build();
     }
 
-    public List<Delivery> readByStatus(DeliveryStatus status){
-        List<Delivery> deliveries = readAll();
+    public List<Delivery> readByStatus(Account account, DeliveryStatus status){
+        List<Delivery> deliveries = readAll(account);
         return deliveries.stream().filter(delivery -> delivery.getStatus() == status).collect(Collectors.toList());
     }
 
-    public List<Delivery> readAll(){
-        return new ArrayList<>();
+    public List<Delivery> readAll(Account account){
+        return data.getContracts().values().stream()
+                .map(delivery -> read(account, delivery))
+                .collect(Collectors.toList());
     }
 
 }
