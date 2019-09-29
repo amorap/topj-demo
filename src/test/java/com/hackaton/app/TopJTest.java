@@ -7,25 +7,11 @@ import com.hackaton.app.payload.requests.NewDeliveryRequest;
 import com.hackaton.app.services.DeliveryService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.topj.account.Account;
 
 @Slf4j
 public class TopJTest {
-
-    private TopJConnector topJConnector;
-    private Account account = null;
-
-    @Before
-    @SneakyThrows
-    public void setUp() {
-        topJConnector = TopJConnector.getInstance();
-        account = TopJConnector.getInstance().getAccount();
-//        account = topJConnector.getTopj().genAccount("a3aab9c186458ffd07ce1c01ba7edf9919724224c34c800514c60ac34084c63e");
-        System.out.println(account.getAddress());
-        System.out.println(account.getPrivateKey());
-    }
 
     @Test
     @SneakyThrows
@@ -39,10 +25,14 @@ public class TopJTest {
                 .build();
         Delivery delivery = DeliveryFactory.createDelivery(request);
 
-        DeliveryService deliveryService = new DeliveryService();
-        Account contractAccount = deliveryService.create(this.account, delivery);
+        InMemoryData data = new InMemoryData();
+        DeliveryService deliveryService = new DeliveryService(data);
 
-        Delivery readDelivery = deliveryService.read(this.account, contractAccount);
+        TopJConnector topJConnector = TopJConnector.getInstance();
+        Account account = topJConnector.createAccount(request.getPrivateKey());
+        Account contractAccount = deliveryService.create(account, delivery);
+
+        Delivery readDelivery = deliveryService.read(account, contractAccount);
         log.info(readDelivery.toString());
     }
 

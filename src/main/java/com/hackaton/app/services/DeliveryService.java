@@ -1,6 +1,7 @@
 package com.hackaton.app.services;
 
 import com.alibaba.fastjson.JSON;
+import com.hackaton.app.InMemoryData;
 import com.hackaton.app.connector.TopJConnector;
 import com.hackaton.app.model.Delivery;
 import com.hackaton.app.model.DeliveryStatus;
@@ -28,6 +29,12 @@ public class DeliveryService {
     public static final String DELIVERY = "delivery";
     private final TopJConnector topJConnector = TopJConnector.getInstance();
 
+    private final InMemoryData data;
+
+    public DeliveryService(InMemoryData data) {
+        this.data = data;
+    }
+
     @Getter
     @AllArgsConstructor
     private enum DeliveryActions {
@@ -37,9 +44,8 @@ public class DeliveryService {
     }
 
     public Account create(Account account, Delivery delivery) {
-        Account accountContract = null;
         try {
-            accountContract = publishContract(account);
+            Account accountContract = publishContract(account);
 
             List<String> attributes = new LinkedList<>();
             attributes.add(delivery.getFrom());
@@ -52,22 +58,19 @@ public class DeliveryService {
             ResponseBase<XTransaction> callContractResult = topJConnector.getTopj()
                     .callContract(account, accountContract.getAddress(), DeliveryActions.CREATE.getActionName(), attributes);
             log.debug(JSON.toJSONString(callContractResult));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
             Thread.sleep(2000);
-        } catch (InterruptedException es) {
-            es.printStackTrace();
+
+            data.addContract(accountContract);
+            return accountContract;
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e.getCause());
         }
-        return accountContract;
     }
 
     private Account publishContract(Account account) throws IOException {
         Account contractAccount = topJConnector.getTopj().genAccount();
-        log.info(contractAccount.getAddress());
-        log.info(contractAccount.getPrivateKey());
+        log.debug(contractAccount.getAddress());
+        log.debug(contractAccount.getPrivateKey());
 
         topJConnector.publishContract(account, contractAccount);
         return contractAccount;

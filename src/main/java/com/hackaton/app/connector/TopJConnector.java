@@ -2,7 +2,6 @@ package com.hackaton.app.connector;
 
 import com.alibaba.fastjson.JSON;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
@@ -27,8 +26,6 @@ public class TopJConnector {
     private static TopJConnector instance;
 
     private final Topj topj;
-    @Setter
-    private Account account;
 
     private TopJConnector(Topj topj){
         this.topj = topj;
@@ -51,20 +48,6 @@ public class TopJConnector {
         HttpService httpService = new HttpService(url);
         Topj topj = Topj.build(httpService);
         instance = new TopJConnector(topj);
-        publishContract();
-    }
-
-    private static void publishContract() throws IOException {
-        log.info("Publish contract...");
-        TopJConnector topJConnector = TopJConnector.getInstance();
-        Account account = new Account();
-        ResponseBase<RequestTokenResponse> requestTokenResponse = topJConnector.getTopj().requestToken(account);
-        log.debug(requestTokenResponse.toString());
-
-        topJConnector.createAccount(account);
-        topJConnector.getAccountInfo(account);
-
-        TopJConnector.getInstance().setAccount(account);
     }
 
     public String publishContract(Account account, Account contractAccount) throws IOException {
@@ -86,7 +69,11 @@ public class TopJConnector {
         return IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
     }
 
-    public void createAccount(Account account){
+    public Account createAccount(String privateKey){
+        Account account = topj.genAccount(privateKey);
+        ResponseBase<RequestTokenResponse> requestTokenResponse = topj.requestToken(account);
+        log.debug(requestTokenResponse.toString());
+
         ResponseBase<XTransaction> createAccountXt = topj.createAccount(account);
         System.out.print("createAccount transaction >> ");
         log.info(JSON.toJSONString(createAccountXt));
@@ -96,6 +83,9 @@ public class TopJConnector {
         } catch (InterruptedException es) {
             es.printStackTrace();
         }
+
+        getAccountInfo(account);
+        return account;
     }
 
     public void getAccountInfo(Account account){
