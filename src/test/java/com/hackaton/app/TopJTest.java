@@ -1,12 +1,17 @@
-package com.example.demo;
+package com.hackaton.app;
 
 import com.alibaba.fastjson.JSON;
+import com.hackaton.app.connector.TopJConnector;
+import com.hackaton.app.model.Delivery;
+import com.hackaton.app.model.DeliveryFactory;
+import com.hackaton.app.payload.requests.NewDeliveryRequest;
+import com.hackaton.app.services.DeliveryService;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.topj.account.Account;
 import org.topj.core.Topj;
-import org.topj.methods.response.AccountInfoResponse;
 import org.topj.methods.response.RequestTokenResponse;
 import org.topj.methods.response.ResponseBase;
 import org.topj.methods.response.XTransaction;
@@ -18,15 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.*;
-
 /**
  * @author Alberto Mora Plata (moral12)
  */
+@Slf4j
 public class TopJTest {
 
     private Topj topj = null;
     private Account account = null;
+    private Account contractAccount = null;
 
     @Before
     @SneakyThrows
@@ -41,25 +46,55 @@ public class TopJTest {
     }
 
     @Test
-    public void testAccountInfo() throws IOException {
+    @SneakyThrows
+    public void createNewDelivery(){
+        publishContract();
+
+        NewDeliveryRequest request = NewDeliveryRequest.builder()
+                .initiator("alberto")
+                .from("A")
+                .to("B")
+                .description("Test")
+                .tokens(5)
+                .build();
+        Delivery delivery = DeliveryFactory.createDelivery(request);
+
+        DeliveryService deliveryService = new DeliveryService();
+        deliveryService.create(topj, account, contractAccount, delivery);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException es) {
+            es.printStackTrace();
+        }
+
+        TopJConnector.getMapProperty(topj, account, contractAccount.getAddress(), "1", "initiator");
+    }
+
+    private void publishContract() throws IOException {
         ResponseBase<RequestTokenResponse> requestTokenResponse = topj.requestToken(account);
         assert (account.getToken() != null);
         Objects.requireNonNull(account);
         System.out.println(JSON.toJSONString(requestTokenResponse));
 
-        TestCommon.createAccount(topj, account);
+        TopJConnector.createAccount(topj, account);
 
-        TestCommon.getAccountInfo(topj, account);
+        TopJConnector.getAccountInfo(topj, account);
 
-        Account contractAccount = topj.genAccount();
+        contractAccount = topj.genAccount();
         System.out.println(contractAccount.getAddress());
         System.out.println(contractAccount.getPrivateKey());
 
-        TestCommon.publishContract(topj, account, contractAccount);
+        TopJConnector.publishContract(topj, account, contractAccount);
+    }
 
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "key");
+    @Test
+    public void testAccountInfo() throws IOException {
+        publishContract();
 
-        TestCommon.getAccountInfo(topj, account);
+        TopJConnector.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "key");
+
+        TopJConnector.getAccountInfo(topj, account);
 
         ResponseBase<XTransaction> callContractResult = topj.callContract(account, contractAccount.getAddress(), "opt_map", Arrays.asList("inkey", Long.valueOf(65)));
         System.out.println("***** call contract transaction >> ");
@@ -71,11 +106,11 @@ public class TopJTest {
             e.printStackTrace();
         }
 
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "inkey");
-        TestCommon.getStringProperty(topj, account, contractAccount.getAddress(), "temp_1");
-        TestCommon.getStringProperty(topj, account, contractAccount.getAddress(), "temp_2");
+        TopJConnector.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "inkey");
+        TopJConnector.getStringProperty(topj, account, contractAccount.getAddress(), "temp_1");
+        TopJConnector.getStringProperty(topj, account, contractAccount.getAddress(), "temp_2");
 
-        TestCommon.getListProperty(topj, account, contractAccount.getAddress(), "mlist");
+        TopJConnector.getListProperty(topj, account, contractAccount.getAddress(), "mlist");
 
         ResponseBase<XTransaction> stringProperty = topj.getStringProperty(account, contractAccount.getAddress(), "temp_1");
         ResponseBase<XTransaction> listProperty = topj.getListProperty(account, contractAccount.getAddress(), "mlist");
