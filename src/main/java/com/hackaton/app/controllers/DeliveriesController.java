@@ -1,5 +1,6 @@
 package com.hackaton.app.controllers;
 
+import com.hackaton.app.connector.TopJConnector;
 import com.hackaton.app.model.Delivery;
 import com.hackaton.app.model.DeliveryFactory;
 import com.hackaton.app.payload.requests.NewDeliveryRequest;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.topj.account.Account;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ import java.util.List;
 public class DeliveriesController {
 
     private final DeliveryService deliveryService;
+
+    private TopJConnector topJConnector = TopJConnector.getInstance();
 
     public DeliveriesController(DeliveryService deliveryService) {
         this.deliveryService = deliveryService;
@@ -39,7 +43,9 @@ public class DeliveriesController {
 
     @PostMapping
     public ResponseEntity createDelivery(NewDeliveryRequest newDelivery){
+        Account account = topJConnector.createAccount(newDelivery.getPrivateKey());
         Delivery delivery = DeliveryFactory.createDelivery(newDelivery);
+        deliveryService.create(account, delivery);
         return ResponseEntity.ok().build();
     }
 

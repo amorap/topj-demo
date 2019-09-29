@@ -56,7 +56,7 @@ public class TopJTest {
 
         TestCommon.createAccount(topj, deliverer);
         TestCommon.getAccountInfo(topj, deliverer);
-        
+
         contractAccount = topj.genAccount();
         System.out.println(contractAccount.getAddress());
         System.out.println(contractAccount.getPrivateKey());
@@ -83,7 +83,8 @@ public class TopJTest {
         TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "status");
 
         topj.accountInfo(deliverer);
-        ResponseBase<XTransaction> callContractResult2 = topj.callContract(deliverer, contractAccount.getAddress(), "assign_delivery", Arrays.asList()); //from, to, description, tokens
+        ResponseBase<XTransaction> callContractResult2 =
+                topj.callContract(deliverer, contractAccount.getAddress(), "assign_delivery", Arrays.asList()); //from, to, description, tokens
         System.out.println(JSON.toJSONString(callContractResult2));
 
         sleep();
@@ -91,7 +92,8 @@ public class TopJTest {
         TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "status");
 
         topj.accountInfo(account);
-        ResponseBase<XTransaction> callContractResult3 = topj.callContract(account, contractAccount.getAddress(), "confirm_delivery", Arrays.asList()); //from, to, description, tokens
+        ResponseBase<XTransaction> callContractResult3 =
+                topj.callContract(account, contractAccount.getAddress(), "confirm_delivery", Arrays.asList()); //from, to, description, tokens
         System.out.println(JSON.toJSONString(callContractResult3));
 
         sleep();
