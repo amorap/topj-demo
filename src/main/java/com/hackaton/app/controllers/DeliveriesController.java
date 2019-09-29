@@ -5,7 +5,6 @@ import com.hackaton.app.model.DeliveryFactory;
 import com.hackaton.app.payload.requests.NewDeliveryRequest;
 import com.hackaton.app.payload.responses.DeliveryResponse;
 import com.hackaton.app.services.DeliveryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

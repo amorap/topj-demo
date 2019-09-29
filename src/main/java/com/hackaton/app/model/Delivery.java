@@ -23,7 +23,7 @@ public class Delivery {
     private DeliveryStatus status;
 
     @Builder
-    Delivery(String id, String initiator, String deliverer, String from, String to, String description, double tokens, DeliveryStatus status) {
+    public Delivery(String id, String initiator, String deliverer, String from, String to, String description, double tokens, DeliveryStatus status) {
         this.id = id;
         this.initiator = initiator;
         this.deliverer = deliverer;

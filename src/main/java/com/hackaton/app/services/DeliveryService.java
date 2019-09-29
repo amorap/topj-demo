@@ -9,12 +9,12 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.topj.account.Account;
-import org.topj.core.Topj;
 import org.topj.methods.response.ResponseBase;
 import org.topj.methods.response.XTransaction;
 
-import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -47,14 +47,32 @@ public class DeliveryService {
         ResponseBase<XTransaction> callContractResult = topJConnector.getTopj()
                 .callContract(account, accountContract.getAddress(), DeliveryActions.CREATE.getActionName(), attributes);
         log.debug(JSON.toJSONString(callContractResult));
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException es) {
+            es.printStackTrace();
+        }
     }
 
     public void update(Delivery delivery){
 
     }
 
-    public Delivery read(String id){
-        return null;
+    public Delivery read(Account account, Account accountContract, String id){
+        String initiator = topJConnector.getMapProperty(account, accountContract.getAddress(), id, "initiator");
+        String from = topJConnector.getMapProperty(account, accountContract.getAddress(), id, "from");
+        String to = topJConnector.getMapProperty(account, accountContract.getAddress(), id, "to");
+        String description = topJConnector.getMapProperty(account, accountContract.getAddress(), id, "description");
+        String tokens = topJConnector.getMapProperty(account, accountContract.getAddress(), id, "tokens");
+        return Delivery.builder()
+                .id(id)
+                .initiator(initiator)
+                .from(from)
+                .to(to)
+                .description(description)
+                .tokens(Double.parseDouble(tokens))
+                .build();
     }
 
     public List<Delivery> readByStatus(DeliveryStatus status){
