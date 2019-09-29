@@ -22,6 +22,7 @@ public class TopJTest {
 
     private Topj topj = null;
     private Account account = null;
+    private Account contractAccount = null;
     private Account deliverer = null;
 
     @Before
@@ -55,16 +56,18 @@ public class TopJTest {
 
         TestCommon.createAccount(topj, deliverer);
         TestCommon.getAccountInfo(topj, deliverer);
+        
+        contractAccount = topj.genAccount();
+        System.out.println(contractAccount.getAddress());
+        System.out.println(contractAccount.getPrivateKey());
+
+        TestCommon.publishContract(topj, account, contractAccount);
+
     }
 
     @Test
     public void testAccountInfo() throws IOException {
 
-        Account contractAccount = topj.genAccount();
-        System.out.println(contractAccount.getAddress());
-        System.out.println(contractAccount.getPrivateKey());
-
-        TestCommon.publishContract(topj, account, contractAccount);
         TestCommon.getAccountInfo(topj, account);
 
         topj.accountInfo(account);

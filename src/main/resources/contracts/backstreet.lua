@@ -3,7 +3,7 @@ DELIVERY = 'delivery'
 DELIVERER = ''
 
 STATUS_OPEN = 'open'
-STATUS_IN_PROGRESS = 'in progress'
+STATUS_IN_PROGRESS = 'in_progress'
 STATUS_FINISHED = 'finished'
 
 function init()

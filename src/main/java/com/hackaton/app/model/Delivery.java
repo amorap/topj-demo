@@ -10,9 +10,6 @@ public class Delivery {
     @NonNull
     private String id;
     @NonNull
-    private String initiator;
-    private String deliverer;
-    @NonNull
     private String from;
     @NonNull
     private String to;
@@ -23,10 +20,8 @@ public class Delivery {
     private DeliveryStatus status;
 
     @Builder
-    public Delivery(String id, String initiator, String deliverer, String from, String to, String description, double tokens, DeliveryStatus status) {
+    public Delivery(String id, String from, String to, String description, double tokens, DeliveryStatus status) {
         this.id = id;
-        this.initiator = initiator;
-        this.deliverer = deliverer;
         this.from = from;
         this.to = to;
         this.description = description;

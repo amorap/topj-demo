@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class NewDeliveryRequest {
 
-    private String initiator;
+    private String privateKey;
     private String from;
     private String to;
     private String description;

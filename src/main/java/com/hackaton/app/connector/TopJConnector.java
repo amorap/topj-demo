@@ -29,8 +29,6 @@ public class TopJConnector {
     private final Topj topj;
     @Setter
     private Account account;
-    @Setter
-    private Account contractAccount;
 
     private TopJConnector(Topj topj){
         this.topj = topj;
@@ -66,17 +64,10 @@ public class TopJConnector {
         topJConnector.createAccount(account);
         topJConnector.getAccountInfo(account);
 
-        Account contractAccount = topJConnector.getTopj().genAccount();
-        log.info(contractAccount.getAddress());
-        log.info(contractAccount.getPrivateKey());
-
-        topJConnector.publishContract(account, contractAccount);
-
         TopJConnector.getInstance().setAccount(account);
-        TopJConnector.getInstance().setContractAccount(contractAccount);
     }
 
-    public void publishContract(Account account, Account contractAccount) throws IOException {
+    public String publishContract(Account account, Account contractAccount) throws IOException {
         String codeStr = getContractContent();
 
         ResponseBase<XTransaction> transactionResponseBase = topj.publishContract(account, contractAccount, codeStr, 200);
@@ -86,10 +77,12 @@ public class TopJConnector {
         } catch (InterruptedException es) {
             es.printStackTrace();
         }
+
+        return "test";
     }
 
     private String getContractContent() throws IOException {
-        InputStream resourceAsStream = TopJConnector.class.getClassLoader().getResourceAsStream("contracts/Contract.lua");
+        InputStream resourceAsStream = TopJConnector.class.getClassLoader().getResourceAsStream("contracts/backstreet.lua");
         return IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
     }
 
