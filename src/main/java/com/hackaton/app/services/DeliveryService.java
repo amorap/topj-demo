@@ -29,31 +29,24 @@ public class DeliveryService {
     @Getter
     @AllArgsConstructor
     private enum DeliveryActions {
-        CREATE("create");
+        CREATE("create_delivery");
 
         private String actionName;
     }
 
     public void create(Topj topj, Account account, Account accountContract, Delivery delivery) {
-//        List<String> attributes = new LinkedList<>();
-//        attributes.add(delivery.getInitiator());
-//        attributes.add(delivery.getFrom());
-//        attributes.add(delivery.getTo());
-//        attributes.add(delivery.getDescription());
-//        attributes.add(String.valueOf(delivery.getTokens()));
-
-        List<String> attributes = Arrays.asList(
-                delivery.getInitiator(),
-                delivery.getFrom(),
-                delivery.getTo(),
-                delivery.getDescription(),
-                String.valueOf(delivery.getTokens()));
+        List<String> attributes = new LinkedList<>();
+        attributes.add(delivery.getInitiator());
+        attributes.add(delivery.getFrom());
+        attributes.add(delivery.getTo());
+        attributes.add(delivery.getDescription());
+        attributes.add(String.valueOf(delivery.getTokens()));
 
         TopJConnector.getAccountInfo(topj, account);
 
         ResponseBase<XTransaction> callContractResult = topj
                 .callContract(account, accountContract.getAddress(), DeliveryActions.CREATE.getActionName(), attributes);
-        log.info(JSON.toJSONString(callContractResult));
+//        log.info(JSON.toJSONString(callContractResult));
     }
 
     public void update(Delivery delivery){

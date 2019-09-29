@@ -15,7 +15,6 @@ import org.topj.core.Topj;
 import org.topj.methods.response.RequestTokenResponse;
 import org.topj.methods.response.ResponseBase;
 import org.topj.methods.response.XTransaction;
-import org.topj.procotol.http.HttpService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,9 +35,7 @@ public class TopJTest {
     @Before
     @SneakyThrows
     public void setUp() {
-        String url = Topj.getDefaultServerUrl("http://hacker.topnetwork.org");
-        HttpService httpService = new HttpService(url);
-        topj = Topj.build(httpService);
+        topj = TopJConnector.getInstance().getTopj();
         account = new Account();
 //        account = topj.genAccount("a3aab9c186458ffd07ce1c01ba7edf9919724224c34c800514c60ac34084c63e");
         System.out.println(account.getAddress());

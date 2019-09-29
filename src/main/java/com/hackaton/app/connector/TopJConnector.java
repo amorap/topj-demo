@@ -1,8 +1,6 @@
 package com.hackaton.app.connector;
 
 import com.alibaba.fastjson.JSON;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -25,10 +23,10 @@ public class TopJConnector {
     private static TopJConnector instance;
 
     @Getter
-    private Topj topj1;
+    private final Topj topj;
 
     private TopJConnector(Topj topj){
-        this.topj1 = topj;
+        this.topj = topj;
     }
 
     public static TopJConnector getInstance() {
@@ -43,10 +41,10 @@ public class TopJConnector {
     }
 
     public static TopJConnector createInstance() throws IOException {
-//        String url = Topj.getDefaultServerUrl("http://hacker.topnetwork.org");
-//        HttpService httpService = new HttpService(url);
-//        Topj topj = Topj.build(httpService);
-        instance = new TopJConnector(null);
+        String url = Topj.getDefaultServerUrl("http://hacker.topnetwork.org");
+        HttpService httpService = new HttpService(url);
+        Topj topj = Topj.build(httpService);
+        instance = new TopJConnector(topj);
         return instance;
     }
 

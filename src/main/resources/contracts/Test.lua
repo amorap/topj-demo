@@ -11,7 +11,7 @@ function init()
     set_key(COUNTER, '1')
 end
 
-function create(initiator, from, to, description, tokens)
+function create_delivery(initiator, from, to, description, tokens)
     local currentCounter = get_key(COUNTER)
     hset(currentCounter, 'id', currentCounter)
     set_key(COUNTER, tostring(tonumber(currentCounter) + 1))
