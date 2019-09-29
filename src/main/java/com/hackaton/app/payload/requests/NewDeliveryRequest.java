@@ -11,6 +11,6 @@ public class NewDeliveryRequest {
     private String from;
     private String to;
     private String description;
-    private double tokens;
+    private int tokens;
 
 }

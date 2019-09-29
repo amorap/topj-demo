@@ -13,7 +13,8 @@ import org.topj.account.Account;
 
 import java.util.List;
 
-@RestController("/deliveries")
+@RestController
+@RequestMapping("deliveries")
 public class DeliveriesController {
 
     private final DeliveryService deliveryService;
@@ -39,6 +40,14 @@ public class DeliveriesController {
         Account deliverer = topJConnector.createAccount(privateKey);
         Account contractAccount = data.getContracts().get(id);
         deliveryService.assignDeliverer(deliverer, contractAccount);
+        return ResponseEntity.ok("Deliverer assigned");
+    }
+
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity confirmDelivery(@RequestParam String privateKey, @PathVariable String id){
+        Account account = topJConnector.createAccount(privateKey);
+        Account contractAccount = data.getContracts().get(id);
+        deliveryService.confirmDelivery(account, contractAccount);
         return ResponseEntity.ok("Deliverer assigned");
     }
 

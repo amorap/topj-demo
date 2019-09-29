@@ -17,11 +17,11 @@ public class TopJTest {
     @SneakyThrows
     public void createNewDelivery() {
         NewDeliveryRequest request = NewDeliveryRequest.builder()
-                .privateKey("a3aab9c186458ffd07ce1c01ba7edf9919724224c34c800514c60ac34084c63e")
+                .privateKey(TopJConnector.getInstance().getTopj().genAccount().getPrivateKey())
                 .from("A")
                 .to("B")
                 .description("Test")
-                .tokens(5)
+                .tokens(200)
                 .build();
         Delivery delivery = DeliveryFactory.createDelivery(request);
 
@@ -30,6 +30,9 @@ public class TopJTest {
 
         TopJConnector topJConnector = TopJConnector.getInstance();
         Account account = topJConnector.createAccount(request.getPrivateKey());
+
+        topJConnector.getAccountInfo(account);
+
         Account contractAccount = deliveryService.create(account, delivery);
 
         Delivery readDelivery = deliveryService.read(account, contractAccount);
@@ -40,6 +43,15 @@ public class TopJTest {
 
         readDelivery = deliveryService.read(account, contractAccount);
         log.info(readDelivery.toString());
+
+        deliveryService.confirmDelivery(account, contractAccount);
+
+        readDelivery = deliveryService.read(account, contractAccount);
+        log.info(readDelivery.toString());
+
+        topJConnector.getAccountInfo(account);
+        topJConnector.getAccountInfo(deliverer);
+
     }
 
 //    @Test

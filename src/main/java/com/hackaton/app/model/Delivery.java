@@ -10,11 +10,11 @@ public class Delivery {
     private String from;
     private String to;
     private String description;
-    private double tokens;
+    private int tokens;
     private DeliveryStatus status;
 
     @Builder
-    public Delivery(String id, String from, String to, String description, double tokens, DeliveryStatus status) {
+    public Delivery(String id, String from, String to, String description, int tokens, DeliveryStatus status) {
         this.id = id;
         this.from = from;
         this.to = to;

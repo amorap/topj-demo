@@ -53,7 +53,7 @@ public class DeliveryService {
 
     public Account create(Account account, Delivery delivery) {
         try {
-            Account accountContract = publishContract(account);
+            Account accountContract = publishContract(account, delivery.getTokens());
 
             List<String> attributes = new LinkedList<>();
             attributes.add(delivery.getFrom());
@@ -75,12 +75,12 @@ public class DeliveryService {
         }
     }
 
-    private Account publishContract(Account account) throws IOException {
+    private Account publishContract(Account account, int tokens) throws IOException {
         Account contractAccount = topJConnector.getTopj().genAccount();
         log.debug(contractAccount.getAddress());
         log.debug(contractAccount.getPrivateKey());
 
-        topJConnector.publishContract(account, contractAccount);
+        topJConnector.publishContract(account, contractAccount, tokens);
         return contractAccount;
     }
 
@@ -95,6 +95,11 @@ public class DeliveryService {
         ResponseBase<XTransaction> callContractResult = topJConnector.getTopj()
                 .callContract(account, contractAccount.getAddress(), DeliveryActions.CONFIRM_DELIVERY.getActionName(), Collections.emptyList());
         log.debug(JSON.toJSONString(callContractResult));
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public Delivery read(Account account, Account accountContract){
@@ -104,10 +109,11 @@ public class DeliveryService {
         String tokens = topJConnector.getMapProperty(account, accountContract.getAddress(), DELIVERY, "tokens");
         String status = topJConnector.getMapProperty(account, accountContract.getAddress(), DELIVERY, "status");
         return Delivery.builder()
+                .id(accountContract.getPrivateKey())
                 .from(from)
                 .to(to)
                 .description(description)
-                .tokens(Double.parseDouble(tokens))
+                .tokens(Integer.parseInt(tokens))
                 .status(DeliveryStatus.valueOf(status.toUpperCase()))
                 .build();
     }

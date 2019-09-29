@@ -50,10 +50,10 @@ public class TopJConnector {
         instance = new TopJConnector(topj);
     }
 
-    public String publishContract(Account account, Account contractAccount) throws IOException {
+    public String publishContract(Account account, Account contractAccount, int tokens) throws IOException {
         String codeStr = getContractContent();
 
-        ResponseBase<XTransaction> transactionResponseBase = topj.publishContract(account, contractAccount, codeStr, 200);
+        ResponseBase<XTransaction> transactionResponseBase = topj.publishContract(account, contractAccount, codeStr, tokens);
         log.debug(JSON.toJSONString(transactionResponseBase));
         try {
             Thread.sleep(2000);
@@ -89,9 +89,9 @@ public class TopJConnector {
     }
 
     public void getAccountInfo(Account account){
-        ResponseBase<AccountInfoResponse> accountInfoResponse2 = topj.accountInfo(account);
+        ResponseBase<AccountInfoResponse> accountInfoResponse = topj.accountInfo(account);
         System.out.print("accountInfo >>>>> ");
-        log.info(JSON.toJSONString(accountInfoResponse2));
+        log.info(JSON.toJSONString(accountInfoResponse));
     }
 
     public String getMapProperty(Account account, String contractAddress, String key1, String key2){

@@ -84,7 +84,7 @@ public class TopJTest {
 
         topj.accountInfo(deliverer);
         ResponseBase<XTransaction> callContractResult2 =
-                topj.callContract(deliverer, contractAccount.getAddress(), "assign_delivery", Arrays.asList()); //from, to, description, tokens
+                topj.callContract(deliverer, contractAccount.getAddress(), "assign_deliverer", Arrays.asList()); //from, to, description, tokens
         System.out.println(JSON.toJSONString(callContractResult2));
 
         sleep();
