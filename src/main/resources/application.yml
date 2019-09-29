@@ -2,4 +2,4 @@ server:
   port: $PORT
 
 logging.level:
-  com.ca: INFO
+  com.hackaton: DEBUG
