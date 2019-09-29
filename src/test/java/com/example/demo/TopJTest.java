@@ -56,8 +56,10 @@ public class TopJTest {
 
         TestCommon.publishContract(topj, account, contractAccount);
         TestCommon.getAccountInfo(topj, account);
+        // initiator, from, to, description, tokens
 
-        ResponseBase<XTransaction> callContractResult = topj.callContract(account, contractAccount.getAddress(), "opt_map", Arrays.asList("mykey", Long.valueOf(42)));
+        topj.accountInfo(account);
+        ResponseBase<XTransaction> callContractResult = topj.callContract(account, contractAccount.getAddress(), "create_delivery", Arrays.asList("yo", "Palmovka", "Paralelni Polis", "Droja", "20")); //initiator, from, to, description, tokens
         System.out.println(JSON.toJSONString(callContractResult));
 
         try {
@@ -66,7 +68,28 @@ public class TopJTest {
             e.printStackTrace();
         }
 
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "mykey");
+        topj.accountInfo(account);
+        ResponseBase<XTransaction> callContractResult2 = topj.callContract(account, contractAccount.getAddress(), "create_delivery", Arrays.asList("alex", "Pocer", "Pankrac", "Drone", "300")); //initiator, from, to, description, tokens
+        System.out.println(JSON.toJSONString(callContractResult2));
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "id");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "initiator");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "from");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "to");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "description");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "tokens");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "id");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "initiator");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "from");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "to");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "description");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "tokens");
 
     }
 
