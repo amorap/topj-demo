@@ -14,9 +14,7 @@ import org.topj.methods.response.ResponseBase;
 import org.topj.methods.response.XTransaction;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,9 +36,18 @@ public class DeliveryService {
     @Getter
     @AllArgsConstructor
     private enum DeliveryActions {
-        CREATE("create_delivery");
+        CREATE("create_delivery"),
+        ASSIGN_DELIVERER("assign_deliverer");
 
         private String actionName;
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public Account create(Account account, Delivery delivery) {
@@ -74,6 +81,13 @@ public class DeliveryService {
 
         topJConnector.publishContract(account, contractAccount);
         return contractAccount;
+    }
+
+    public void assignDeliverer(Account deliverer, Account contractAccount){
+        ResponseBase<XTransaction> callContractResult2 = topJConnector.getTopj()
+                .callContract(deliverer, contractAccount.getAddress(), DeliveryActions.ASSIGN_DELIVERER.getActionName(), Collections.emptyList());
+        log.debug(JSON.toJSONString(callContractResult2));
+        sleep();
     }
 
     public void update(Delivery delivery){

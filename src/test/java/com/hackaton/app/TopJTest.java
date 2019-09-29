@@ -34,6 +34,12 @@ public class TopJTest {
 
         Delivery readDelivery = deliveryService.read(account, contractAccount);
         log.info(readDelivery.toString());
+
+        Account deliverer = topJConnector.createAccount("6dc191d4d6debf2d0fa84e1778be47bfcf7c3b694aca8de00a488f1ed05a3c8d");
+        deliveryService.assignDeliverer(deliverer, contractAccount);
+
+        readDelivery = deliveryService.read(account, contractAccount);
+        log.info(readDelivery.toString());
     }
 
 //    @Test

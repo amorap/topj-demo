@@ -18,7 +18,7 @@ function create_delivery(from, to, description, tokens)
     hset(DELIVERY, 'status', STATUS_OPEN)
 end
 
-function assign_delivery()
+function assign_deliverer()
     DELIVERER = exec_account()
     hset(DELIVERY, 'status', STATUS_IN_PROGRESS)
 end

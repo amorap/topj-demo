@@ -5,7 +5,6 @@ import com.hackaton.app.connector.TopJConnector;
 import com.hackaton.app.model.Delivery;
 import com.hackaton.app.model.DeliveryFactory;
 import com.hackaton.app.payload.requests.NewDeliveryRequest;
-import com.hackaton.app.payload.requests.OpenDeliveriesRequest;
 import com.hackaton.app.services.DeliveryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +35,12 @@ public class DeliveriesController {
         return ResponseEntity.ok(deliveries);
     }
 
-    @PutMapping("/a")
-    public ResponseEntity<List<Delivery>> getOpenDeliveries(@RequestBody OpenDeliveriesRequest request){
-        Account account = topJConnector.createAccount(request.getPrivateKey());
-        List<Delivery> deliveries = data.getContracts().values().stream()
-                .map(delivery -> deliveryService.read(account, delivery))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(deliveries);
+    @PutMapping("/{id}/assign")
+    public ResponseEntity assignDeliverer(@RequestParam String privateKey, @PathVariable String id){
+        Account deliverer = topJConnector.createAccount(privateKey);
+        Account contractAccount = data.getContracts().get(id);
+        deliveryService.assignDeliverer(deliverer, contractAccount);
+        return ResponseEntity.ok("Deliverer assigned");
     }
 
     @GetMapping("/pending")
