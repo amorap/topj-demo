@@ -1,46 +1,32 @@
+COUNTER = 'counter'
+DELIVERIES = 'deliveries_map'
+INITIATOR1 = ''
+INITIATOR2 = ''
+INITIATOR3 = ''
+INITIATOR4 = ''
+INITIATOR5 = ''
+
 function init()
-    create_key('temp_1')
-    create_key('temp_2')
-    hcreate('hmap')
-    set_key('temp_1', '0')
-    set_key('temp_2', '0')
-    hset('hmap', 'key', 'val')
-    hcreate('empty_map')
-    create_key('map_len')
-    create_key('map_str')
-
-    lcreate('mlist')
-    rpush('mlist', '44')
+    hcreate('1')
+    create_key(COUNTER)
+    set_key(COUNTER, '0')
 end
 
-function opt_map(key, value)
-    hset('hmap', tostring(key), tostring(value))
-    lpush("mlist", tostring(value))
+function create_delivery(initiator, from, to, description)
+    local currentCounter = tostring(tonumber(get_key(COUNTER)) + 1)
+    hset(currentCounter, 'id', currentCounter)
+    hset(currentCounter, 'initiator', tostring(initiator))
+    hset(currentCounter, 'deliverer', '')
+    hset(currentCounter, 'from', tostring(from))
+    hset(currentCounter, 'to', tostring(to))
+    hset(currentCounter, 'description', tostring(description))
+    hset(currentCounter, 'tokens', AUX)
 end
 
-function check_map(key)
-    local map_len = hlen('hmap')
-    set_key('temp_1', tostring(map_len))
-    local map_str = hget('hmap', tostring(key))
-    set_key('temp_2', tostring(map_str))
-    hdel('hmap', tostring(key))
+function assign_delivery(mapId, deliverer)
+    hset(tostring(mapId), 'deliverer', tostring(deliverer))
 end
 
-function get_empty_map()
-    set_key('map_len', tostring(hlen('empty_map')))
-    set_key('map_str', tostring(hget('empty_map', 'unexist')))
-end
+--function confirm_delivery(deliverer)
 
-function get_empty_key()
-    set_key('map_str', tostring(hget('empty_map', '')))
-end
-
-function del_empty_key()
-    hdel('hmap', '')
-    set_key('map_len', tostring(hlen('empty_map')))
-end
-
-function del_not_exist_key()
-    hdel('hmap', 'unexist')
-    set_key('map_len', tostring(hlen('empty_map')))
-end
+--end
