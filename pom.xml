@@ -52,6 +52,8 @@
             <groupId>org.topj</groupId>
             <artifactId>topj-core</artifactId>
             <version>1.0.12</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/topj-core-1.0.12.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
