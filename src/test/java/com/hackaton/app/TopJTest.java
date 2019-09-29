@@ -55,41 +55,4 @@ public class TopJTest {
 
     }
 
-//    @Test
-//    public void testAccountInfo() throws IOException {
-//        topJConnector.getMapProperty(account, contractAccount.getAddress(), "hmap", "key");
-//
-//        topJConnector.getAccountInfo(account);
-//
-//        ResponseBase<XTransaction> callContractResult = topJConnector.getTopj().callContract(account, contractAccount.getAddress(), "opt_map", Arrays.asList("inkey", Long.valueOf(65)));
-//        System.out.println("***** call contract transaction >> ");
-//        System.out.println(JSON.toJSONString(callContractResult));
-//
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        topJConnector.getMapProperty(account, contractAccount.getAddress(), "hmap", "inkey");
-//        topJConnector.getStringProperty(account, contractAccount.getAddress(), "temp_1");
-//        topJConnector.getStringProperty(account, contractAccount.getAddress(), "temp_2");
-//
-//        topJConnector.getListProperty(account, contractAccount.getAddress(), "mlist");
-//
-//        ResponseBase<XTransaction> stringProperty = topJConnector.getTopj().getStringProperty(account, contractAccount.getAddress(), "temp_1");
-//        ResponseBase<XTransaction> listProperty = topJConnector.getTopj().getListProperty(account, contractAccount.getAddress(), "mlist");
-//        List<String> getPropertyParams = new ArrayList<>();
-//        getPropertyParams.add("hmap");
-//        getPropertyParams.add("inkey");
-//        ResponseBase<XTransaction> mapProperty = topJConnector.getTopj().getMapProperty(account, contractAccount.getAddress(), getPropertyParams);
-//        System.out.println(JSON.toJSONString(stringProperty));
-//        System.out.println(JSON.toJSONString(listProperty));
-//        System.out.println(JSON.toJSONString(mapProperty));
-
-//        ResponseBase<XTransaction> accountTransaction = topJConnector.getTopj().accountTransaction(account, account.getLastHash());
-//        System.out.println("accountTransaction >> ");
-//        System.out.println(JSON.toJSONString(accountTransaction));
-//    }
-
 }

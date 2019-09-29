@@ -75,8 +75,8 @@ public class TopJConnector {
         log.debug(requestTokenResponse.toString());
 
         ResponseBase<XTransaction> createAccountXt = topj.createAccount(account);
-        System.out.print("createAccount transaction >> ");
-        log.info(JSON.toJSONString(createAccountXt));
+        log.debug("createAccount transaction >> ");
+        log.debug(JSON.toJSONString(createAccountXt));
 
         try {
             Thread.sleep(2000);
@@ -90,8 +90,8 @@ public class TopJConnector {
 
     public void getAccountInfo(Account account){
         ResponseBase<AccountInfoResponse> accountInfoResponse = topj.accountInfo(account);
-        System.out.print("accountInfo >>>>> ");
-        log.info(JSON.toJSONString(accountInfoResponse));
+        log.debug("accountInfo >>>>> ");
+        log.debug(JSON.toJSONString(accountInfoResponse));
     }
 
     public String getMapProperty(Account account, String contractAddress, String key1, String key2){
@@ -113,14 +113,14 @@ public class TopJConnector {
 
     public void getStringProperty(Account account, String contractAddress, String key){
         ResponseBase<XTransaction> voteXt = topj.getProperty(account, contractAddress, "string", key);
-        System.out.print("get property >>>>> ");
-        log.info(JSON.toJSONString(voteXt));
+        log.debug("get property >>>>> ");
+        log.debug(JSON.toJSONString(voteXt));
     }
 
     public void getListProperty(Account account, String contractAddress, String key){
         ResponseBase<XTransaction> voteXt = topj.getProperty(account, contractAddress, "list", key);
-        System.out.print("get property >>>>> ");
-        log.info(JSON.toJSONString(voteXt));
+        log.debug("get property >>>>> ");
+        log.debug(JSON.toJSONString(voteXt));
     }
 
 }
