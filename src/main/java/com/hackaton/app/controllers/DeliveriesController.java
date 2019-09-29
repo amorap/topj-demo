@@ -27,6 +27,14 @@ public class DeliveriesController {
         this.data = data;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Delivery>> getAllDeliveries(@RequestParam String privateKey){
+        Account account = topJConnector.createAccount(privateKey);
+
+        List<Delivery> openDeliveries = deliveryService.readAll(account);
+        return ResponseEntity.ok(openDeliveries);
+    }
+
     @GetMapping("/open")
     public ResponseEntity<List<Delivery>> getOpenDeliveries(@RequestParam String privateKey){
         Account account = topJConnector.createAccount(privateKey);
@@ -48,7 +56,7 @@ public class DeliveriesController {
         Account account = topJConnector.createAccount(privateKey);
         Account contractAccount = data.getContracts().get(id);
         deliveryService.confirmDelivery(account, contractAccount);
-        return ResponseEntity.ok("Deliverer assigned");
+        return ResponseEntity.ok("Deliverer finished");
     }
 
     @GetMapping("/pending")
