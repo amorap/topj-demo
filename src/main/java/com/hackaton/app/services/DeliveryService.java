@@ -95,11 +95,7 @@ public class DeliveryService {
         ResponseBase<XTransaction> callContractResult = topJConnector.getTopj()
                 .callContract(account, contractAccount.getAddress(), DeliveryActions.CONFIRM_DELIVERY.getActionName(), Collections.emptyList());
         log.debug(JSON.toJSONString(callContractResult));
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep();
     }
 
     public Delivery read(Account account, Account accountContract){
