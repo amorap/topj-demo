@@ -34,7 +34,7 @@ public class TestCommon {
     }
 
     private static String getContractContent() throws IOException {
-        InputStream resourceAsStream = TestCommon.class.getClassLoader().getResourceAsStream("contracts/Hello.lua");
+        InputStream resourceAsStream = TestCommon.class.getClassLoader().getResourceAsStream("contracts/backstreet.lua");
         return IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
     }
 

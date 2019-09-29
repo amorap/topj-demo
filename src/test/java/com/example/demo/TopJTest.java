@@ -27,6 +27,7 @@ public class TopJTest {
 
     private Topj topj = null;
     private Account account = null;
+    private Account deliverer = null;
 
     @Before
     @SneakyThrows
@@ -38,10 +39,7 @@ public class TopJTest {
 //        account = topj.genAccount("a3aab9c186458ffd07ce1c01ba7edf9919724224c34c800514c60ac34084c63e");
         System.out.println(account.getAddress());
         System.out.println(account.getPrivateKey());
-    }
 
-    @Test
-    public void testAccountInfo() throws IOException {
         ResponseBase<RequestTokenResponse> requestTokenResponse = topj.requestToken(account);
         assert (account.getToken() != null);
         Objects.requireNonNull(account);
@@ -50,47 +48,66 @@ public class TopJTest {
         TestCommon.createAccount(topj, account);
         TestCommon.getAccountInfo(topj, account);
 
+        deliverer = new Account();
+        System.out.println(deliverer.getAddress());
+        System.out.println(deliverer.getPrivateKey());
+
+
+        ResponseBase<RequestTokenResponse> requestTokenResponse2 = topj.requestToken(deliverer);
+        assert (deliverer.getToken() != null);
+        Objects.requireNonNull(deliverer);
+        System.out.println(JSON.toJSONString(requestTokenResponse2));
+
+        TestCommon.createAccount(topj, deliverer);
+        TestCommon.getAccountInfo(topj, deliverer);
+    }
+
+    @Test
+    public void testAccountInfo() throws IOException {
+
         Account contractAccount = topj.genAccount();
         System.out.println(contractAccount.getAddress());
         System.out.println(contractAccount.getPrivateKey());
 
         TestCommon.publishContract(topj, account, contractAccount);
         TestCommon.getAccountInfo(topj, account);
-        // initiator, from, to, description, tokens
 
         topj.accountInfo(account);
-        ResponseBase<XTransaction> callContractResult = topj.callContract(account, contractAccount.getAddress(), "create_delivery", Arrays.asList("yo", "Palmovka", "Paralelni Polis", "Droja", "20")); //initiator, from, to, description, tokens
+        ResponseBase<XTransaction> callContractResult = topj.callContract(account, contractAccount.getAddress(), "create_delivery", Arrays.asList("Palmovka", "Paralelni Polis", "Droja", "200")); //from, to, description, tokens
         System.out.println(JSON.toJSONString(callContractResult));
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sleep();
 
-        topj.accountInfo(account);
-        ResponseBase<XTransaction> callContractResult2 = topj.callContract(account, contractAccount.getAddress(), "create_delivery", Arrays.asList("alex", "Pocer", "Pankrac", "Drone", "300")); //initiator, from, to, description, tokens
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "from");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "to");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "description");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "tokens");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "status");
+
+        topj.accountInfo(deliverer);
+        ResponseBase<XTransaction> callContractResult2 = topj.callContract(deliverer, contractAccount.getAddress(), "assign_delivery", Arrays.asList()); //from, to, description, tokens
         System.out.println(JSON.toJSONString(callContractResult2));
 
+        sleep();
+
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "status");
+
+        topj.accountInfo(account);
+        ResponseBase<XTransaction> callContractResult3 = topj.callContract(account, contractAccount.getAddress(), "confirm_delivery", Arrays.asList()); //from, to, description, tokens
+        System.out.println(JSON.toJSONString(callContractResult3));
+
+        sleep();
+
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "delivery", "status");
+        TestCommon.getAccountInfo(topj, deliverer);
+    }
+
+    public void sleep() {
+
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "id");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "initiator");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "from");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "to");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "description");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "1", "tokens");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "id");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "initiator");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "from");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "to");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "description");
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "2", "tokens");
-
     }
-
 }
