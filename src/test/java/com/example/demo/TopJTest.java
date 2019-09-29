@@ -48,7 +48,6 @@ public class TopJTest {
         System.out.println(JSON.toJSONString(requestTokenResponse));
 
         TestCommon.createAccount(topj, account);
-
         TestCommon.getAccountInfo(topj, account);
 
         Account contractAccount = topj.genAccount();
@@ -56,13 +55,9 @@ public class TopJTest {
         System.out.println(contractAccount.getPrivateKey());
 
         TestCommon.publishContract(topj, account, contractAccount);
-
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "key");
-
         TestCommon.getAccountInfo(topj, account);
 
-        ResponseBase<XTransaction> callContractResult = topj.callContract(account, contractAccount.getAddress(), "opt_map", Arrays.asList("inkey", Long.valueOf(65)));
-        System.out.println("***** call contract transaction >> ");
+        ResponseBase<XTransaction> callContractResult = topj.callContract(account, contractAccount.getAddress(), "opt_map", Arrays.asList("mykey", Long.valueOf(42)));
         System.out.println(JSON.toJSONString(callContractResult));
 
         try {
@@ -71,25 +66,8 @@ public class TopJTest {
             e.printStackTrace();
         }
 
-        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "inkey");
-        TestCommon.getStringProperty(topj, account, contractAccount.getAddress(), "temp_1");
-        TestCommon.getStringProperty(topj, account, contractAccount.getAddress(), "temp_2");
+        TestCommon.getMapProperty(topj, account, contractAccount.getAddress(), "hmap", "mykey");
 
-        TestCommon.getListProperty(topj, account, contractAccount.getAddress(), "mlist");
-
-        ResponseBase<XTransaction> stringProperty = topj.getStringProperty(account, contractAccount.getAddress(), "temp_1");
-        ResponseBase<XTransaction> listProperty = topj.getListProperty(account, contractAccount.getAddress(), "mlist");
-        List<String> getPropertyParams = new ArrayList<>();
-        getPropertyParams.add("hmap");
-        getPropertyParams.add("inkey");
-        ResponseBase<XTransaction> mapProperty = topj.getMapProperty(account, contractAccount.getAddress(), getPropertyParams);
-        System.out.println(JSON.toJSONString(stringProperty));
-        System.out.println(JSON.toJSONString(listProperty));
-        System.out.println(JSON.toJSONString(mapProperty));
-
-//        ResponseBase<XTransaction> accountTransaction = topj.accountTransaction(account, account.getLastHash());
-//        System.out.println("accountTransaction >> ");
-//        System.out.println(JSON.toJSONString(accountTransaction));
     }
 
 }
