@@ -28,6 +28,15 @@ public class DeliveriesController {
     }
 
     @GetMapping("/open")
+    public ResponseEntity<List<Delivery>> getOpenDeliveries(@RequestParam String privateKey){
+        Account account = topJConnector.createAccount(privateKey);
+        List<Delivery> deliveries = data.getContracts().values().stream()
+                .map(delivery -> deliveryService.read(account, delivery))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(deliveries);
+    }
+
+    @PutMapping("/a")
     public ResponseEntity<List<Delivery>> getOpenDeliveries(@RequestBody OpenDeliveriesRequest request){
         Account account = topJConnector.createAccount(request.getPrivateKey());
         List<Delivery> deliveries = data.getContracts().values().stream()
