@@ -13,11 +13,6 @@ public class AppStartup implements ApplicationListener<ApplicationReadyEvent> {
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
         log.info("Setup application...");
-        try {
-            TopJConnector.createInstance();
-        } catch (IOException e) {
-            log.error("Unable to connect to Top Network.", e);
-        }
     }
 
 }

@@ -34,21 +34,20 @@ public class TopJConnector {
             try {
                 createInstance();
             } catch (IOException e) {
-                log.error("", e);
+                log.error("Unable to connect to Top Network.", e);
             }
         }
         return instance;
     }
 
-    public static TopJConnector createInstance() throws IOException {
+    private static void createInstance() throws IOException {
         String url = Topj.getDefaultServerUrl("http://hacker.topnetwork.org");
         HttpService httpService = new HttpService(url);
         Topj topj = Topj.build(httpService);
         instance = new TopJConnector(topj);
-        return instance;
     }
 
-    public static void publishContract(Topj topj, Account account, Account contractAccount) throws IOException {
+    public void publishContract(Account account, Account contractAccount) throws IOException {
         String codeStr = getContractContent();
 
         ResponseBase<XTransaction> transactionResponseBase = topj.publishContract(account, contractAccount, codeStr, 200);
@@ -62,12 +61,12 @@ public class TopJConnector {
         }
     }
 
-    private static String getContractContent() throws IOException {
+    private String getContractContent() throws IOException {
         InputStream resourceAsStream = TopJConnector.class.getClassLoader().getResourceAsStream("contracts/Test.lua");
         return IOUtils.toString(resourceAsStream, StandardCharsets.UTF_8);
     }
 
-    public static void createAccount(Topj topj, Account account){
+    public void createAccount(Account account){
         ResponseBase<XTransaction> createAccountXt = topj.createAccount(account);
         System.out.print("createAccount transaction >> ");
         log.info(JSON.toJSONString(createAccountXt));
@@ -79,13 +78,13 @@ public class TopJConnector {
         }
     }
 
-    public static void getAccountInfo(Topj topj, Account account){
+    public void getAccountInfo(Account account){
         ResponseBase<AccountInfoResponse> accountInfoResponse2 = topj.accountInfo(account);
         System.out.print("accountInfo >>>>> ");
         log.info(JSON.toJSONString(accountInfoResponse2));
     }
 
-    public static void getMapProperty(Topj topj, Account account, String contractAddress, String key1, String key2){
+    public void getMapProperty(Account account, String contractAddress, String key1, String key2){
         List<String> getPropertyParams = new ArrayList<>();
         getPropertyParams.add(key1);
         getPropertyParams.add(key2);
@@ -94,13 +93,13 @@ public class TopJConnector {
         log.info(JSON.toJSONString(voteXt));
     }
 
-    public static void getStringProperty(Topj topj, Account account, String contractAddress, String key){
+    public void getStringProperty(Account account, String contractAddress, String key){
         ResponseBase<XTransaction> voteXt = topj.getProperty(account, contractAddress, "string", key);
         System.out.print("get property >>>>> ");
         log.info(JSON.toJSONString(voteXt));
     }
 
-    public static void getListProperty(Topj topj, Account account, String contractAddress, String key){
+    public void getListProperty(Account account, String contractAddress, String key){
         ResponseBase<XTransaction> voteXt = topj.getProperty(account, contractAddress, "list", key);
         System.out.print("get property >>>>> ");
         log.info(JSON.toJSONString(voteXt));

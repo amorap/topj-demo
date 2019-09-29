@@ -34,7 +34,7 @@ public class DeliveryService {
         private String actionName;
     }
 
-    public void create(Topj topj, Account account, Account accountContract, Delivery delivery) {
+    public void create(Account account, Account accountContract, Delivery delivery) {
         List<String> attributes = new LinkedList<>();
         attributes.add(delivery.getInitiator());
         attributes.add(delivery.getFrom());
@@ -42,11 +42,11 @@ public class DeliveryService {
         attributes.add(delivery.getDescription());
         attributes.add(String.valueOf(delivery.getTokens()));
 
-        TopJConnector.getAccountInfo(topj, account);
+        topJConnector.getAccountInfo(account);
 
-        ResponseBase<XTransaction> callContractResult = topj
+        ResponseBase<XTransaction> callContractResult = topJConnector.getTopj()
                 .callContract(account, accountContract.getAddress(), DeliveryActions.CREATE.getActionName(), attributes);
-//        log.info(JSON.toJSONString(callContractResult));
+        log.debug(JSON.toJSONString(callContractResult));
     }
 
     public void update(Delivery delivery){
